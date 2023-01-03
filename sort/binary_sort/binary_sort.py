@@ -7,6 +7,8 @@ import unittest
     迭代法
 '''
 def binary_sort_left_closed_right_closed_iterative(nums,target,left,right):
+    if left > right:
+        return -1
     # 因为区间为左闭右闭区间.所以left 等于 right 是有意义的
     while(left <= right):
         mid = left + ((right - left) >> 1)
@@ -43,6 +45,8 @@ def binary_sort_left_closed_right_closed_recursive(nums,target,left,right):
     迭代法
 '''
 def binary_sort_left_closed_right_open_iterative(nums,target,left,right):
+    if left > right:
+        return -1
     # 由于是左闭右开区间,所以 left = right不存在
     while(left < right):
         mid = left + ((right - left) >> 1)
@@ -85,16 +89,17 @@ def binary_sort_left_closed_right_open_recursive(nums,target,left,right):
 def binary_sort_first_element_equals_left_closed_right_closed_iterative(nums,target,left,right):
     if left > right:
         return -1
-    mid = left + ((right - left) >> 1)
-    if target < nums[mid]:
-        right = mid - 1
-    elif target > nums[mid]:
-        left = mid + 1
-    # 判断左边界情况,如果mid为首位或者mid前一位不等于target 表示找到了该值
-    elif (mid == 0 or nums[mid - 1] != target):
-        return mid
-    else:
-        right = mid - 1
+    while left <= right:
+        mid = left + ((right - left) >> 1)
+        if target < nums[mid]:
+            right = mid - 1
+        elif target > nums[mid]:
+            left = mid + 1
+        # 判断左边界情况,如果mid为首位或者mid前一位不等于target 表示找到了该值
+        elif (mid == 0 or nums[mid - 1] != target):
+            return mid
+        else:
+            right = mid - 1
     return -1
 
 '''
@@ -107,17 +112,17 @@ def binary_sort_first_element_equals_left_closed_right_closed_iterative(nums,tar
 def binary_sort_last_element_equals_left_closed_right_closed_iterative(nums,target,left,right):
     if left > right:
         return - 1
-    mid = left + ((right - left) >> 1)
-    if target < nums[mid]:
-        right = mid - 1
-    elif target > nums[mid]:
-        left = mid + 1
-    elif (mid == (len(nums) - 1)) or (nums[mid + 1] != target):
-        return mid 
-    # 往右区间找
-    else:
-        left = mid + 1
-
+    while left <= right:
+        mid = left + ((right - left) >> 1)
+        if target < nums[mid]:
+            right = mid - 1
+        elif target > nums[mid]:
+            left = mid + 1
+        elif (mid == (len(nums) - 1)) or (nums[mid + 1] != target):
+            return mid 
+        # 往右区间找
+        else:
+            left = mid + 1            
     return -1
 
 '''
@@ -128,7 +133,20 @@ def binary_sort_last_element_equals_left_closed_right_closed_iterative(nums,targ
     查找第一个大于等于给定值的元素
 '''
 def binary_sort_first_element_gte_left_closed_right_closed_iterative(nums,target,left,right):
+    if left > right:
+        return -1
+    while left <= right:
+        mid = left + ((right - left) >> 1)
+        # 如果中间元素 >= 目标值
+        if nums[mid] >= target:
+            if (mid == 0) or (nums[mid - 1] < target):
+                return mid
+            else:
+                right = mid - 1
+        else:
+            left = mid + 1
     return -1
+
 
 '''
     元素有序、有重复
@@ -138,6 +156,17 @@ def binary_sort_first_element_gte_left_closed_right_closed_iterative(nums,target
     查找最后一个小于等于给定值的元素
 '''
 def binary_sort_last_element_lte_left_closed_right_closed_iterative(nums,target,left,right):
+    if left > right:
+        return -1
+    while left <= right:
+        mid = left + ((right - left) >> 1)
+        if nums[mid] <= target:
+            if mid == right or nums[mid + 1] > target:
+                return mid
+            else:
+                left = mid + 1
+        else:
+            right = mid - 1
     return -1
 
 
@@ -178,6 +207,18 @@ class binary_test(unittest.TestCase):
         target = 4
         self.assertEqual(binary_sort_last_element_equals_left_closed_right_closed_iterative(nums,target,0,len(nums) - 1),6)
         self.assertEqual(binary_sort_last_element_equals_left_closed_right_closed_iterative(nums,-1,0,len(nums) - 1),-1)
+
+    def test_binary_sort_first_element_gte_left_closed_right_closed_iterative(self):
+        nums = [3,4,6,7,10]
+        target = 5
+        self.assertEqual(binary_sort_first_element_gte_left_closed_right_closed_iterative(nums,target,0,len(nums) - 1),2)
+        self.assertEqual(binary_sort_first_element_gte_left_closed_right_closed_iterative(nums,-1,0,len(nums) - 1),0)
+
+    def test_binary_sort_last_element_lte_left_closed_right_closed_iterative(self):
+        nums = [3,4,6,7,10]
+        target = 5
+        self.assertEqual(binary_sort_last_element_lte_left_closed_right_closed_iterative(nums,target,0,len(nums) - 1),1)
+        self.assertEqual(binary_sort_last_element_lte_left_closed_right_closed_iterative(nums,-1,0,len(nums) - 1),-1)        
 
 
 if __name__ == '__main__':
